@@ -17,6 +17,13 @@ class MainActivity : AppCompatActivity() {
         _viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
         onClickListeners()
+        observe()
+    }
+
+    private fun observe() = _viewModel.run {
+        liveData.observe(this@MainActivity) {
+            _binding.liveDataTx.text = it
+        }
     }
 
     private fun onClickListeners() = _binding.run {
