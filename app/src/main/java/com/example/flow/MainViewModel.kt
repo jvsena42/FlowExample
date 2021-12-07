@@ -24,12 +24,14 @@ class MainViewModel : ViewModel() {
         _livedata.value = "Livedata"
     }
 
-    /*It automatically emit the value when the activity is recreated*/
+    /*Used to set state
+    It automatically emit the value when the activity is recreated*/
     fun triggerStateFlow() {
         _stateFlow.value = "StateFlow"
     }
 
-    // The flow dont hold state
+    /*If I have some logic and I want to emmit the events trough the time
+    Don't holds state*/
     fun triggerFlow(): Flow<String> {
         return flow {
             repeat(5) {
@@ -39,6 +41,7 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    /*Used to send events to UI*/
     fun triggerSharedFlow() {
         viewModelScope.launch {
             _sharedFlow.emit("SharedFlow")
