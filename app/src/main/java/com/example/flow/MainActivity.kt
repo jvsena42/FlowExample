@@ -33,24 +33,28 @@ class MainActivity : AppCompatActivity() {
                 _binding.stateFlowTx.text = it
             }
         }
+
+        lifecycleScope.launchWhenStarted {
+            _viewModel.sharedFlow.collectLatest {
+                _binding.sharedFlowTx.text = it
+            }
+        }
     }
 
     private fun onClickListeners() = _binding.run {
 
-        liveDataBtn.setOnClickListener {
-            _viewModel.triggerLiveData()
-        }
+        liveDataBtn.setOnClickListener { _viewModel.triggerLiveData() }
 
-        stateFlowBtn.setOnClickListener {
-            _viewModel.triggerStateFlow()
-        }
+        stateFlowBtn.setOnClickListener { _viewModel.triggerStateFlow() }
 
         flowBtn.setOnClickListener {
-            _viewModel.triggerFlow()
+            lifecycleScope.launch {
+                _viewModel.triggerFlow().collectLatest {
+                    _binding.flowTx.text = it
+                }
+            }
         }
 
-        sharedFlowBtn.setOnClickListener {
-            _viewModel.triggerSharedFlow()
-        }
+        sharedFlowBtn.setOnClickListener { _viewModel.triggerSharedFlow() }
     }
 }

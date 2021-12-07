@@ -3,10 +3,10 @@ package com.example.flow
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlin.time.Duration
 
 class MainViewModel : ViewModel() {
 
@@ -16,6 +16,7 @@ class MainViewModel : ViewModel() {
     private val _stateFlow = MutableStateFlow("Hello World")
     val stateFlow = _stateFlow.asStateFlow()
 
+    //Is more used to send one time events
     private val _sharedFlow = MutableSharedFlow<String>()
     val sharedFlow = _sharedFlow.asSharedFlow()
 
@@ -23,15 +24,24 @@ class MainViewModel : ViewModel() {
         _livedata.value = "Livedata"
     }
 
+    /*It automatically emit the value when the activity is recreated*/
     fun triggerStateFlow() {
         _stateFlow.value = "StateFlow"
     }
 
-    fun triggerFlow() {
-
+    // The flow dont hold state
+    fun triggerFlow(): Flow<String> {
+        return flow {
+            repeat(5) {
+                emit("item $it")
+                kotlinx.coroutines.delay(1000L)
+            }
+        }
     }
 
     fun triggerSharedFlow() {
-
+        viewModelScope.launch {
+            _sharedFlow.emit("SharedFlow")
+        }
     }
 }
